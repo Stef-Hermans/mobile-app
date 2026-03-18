@@ -1,13 +1,16 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, Button, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ title, description, price, image, onPress }) => {
+  const navigation = useNavigation();
   return (
     <View style={styles.card}>
-      <Image source={require("../images/product.jpg")} style={styles.image} />
-      <Text style={styles.title}>Fiets</Text>
-      <Text style={styles.price}>100$</Text>
-      <Text style={styles.description}>Prachtige fiets!</Text>
+      <Image source={image} style={styles.image} />
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.price}>{price}</Text>
+      <Text style={styles.description}>{description}</Text>
+      <Button title="Druk hier voor detail" onPress={onPress} />
     </View>
   );
 };
