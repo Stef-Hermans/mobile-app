@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import ProductCard from "../components/ProductCard";
+import BlogCard from "../components/BlogCard";
 
 const HomeScreen = ({ navigation }) => {
   const [text, setText] = useState("");
@@ -67,6 +68,20 @@ const HomeScreen = ({ navigation }) => {
         }
       />
       <ProductCard product={product} />
+
+      <BlogCard
+        title="Een prachtige dag om te fietsen"
+        description="Vandaag is het een prachtige dag om te fietsen! De zon schijnt, de vogels fluiten, en de lucht is fris. Het perfecte weer om eropuit te gaan en te genieten van de natuur op twee wielen."
+        image={require("../images/product.jpg")}
+        onPress={() =>
+          navigation.navigate("BlogDetails", {
+            title: "Een prachtige dag om te fietsen",
+            description:
+              "Vandaag is het een prachtige dag om te fietsen! De zon schijnt, de vogels fluiten, en de lucht is fris. Het perfecte weer om eropuit te gaan en te genieten van de natuur op twee wielen.",
+            image: require("../images/product.jpg"),
+          })
+        }
+      />
 
       <StatusBar style="auto" />
     </ScrollView>
