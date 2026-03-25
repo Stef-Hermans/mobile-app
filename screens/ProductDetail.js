@@ -72,6 +72,12 @@ const styles = StyleSheet.create({
     gap: 10,
     marginVertical: 10,
   },
+  image: {
+    width: 250,
+    height: 250,
+    borderRadius: 8,
+    marginBottom: 20,
+  },
 });
 
 export default ProductDetail;
