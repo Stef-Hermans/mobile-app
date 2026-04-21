@@ -25,9 +25,9 @@ const categoryNames = {
 };
 
 const HomeScreen = ({ navigation }) => {
-  const [text, setText] = useState("");
   const [isEnabled, setIsEnabled] = useState(false);
   const [products, setProducts] = useState([]);
+  const [blogs, setBlogs] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("price-asc");
@@ -45,7 +45,7 @@ const HomeScreen = ({ navigation }) => {
       .then((res) => res.json())
       .then((data) =>
         setProducts(
-          data.items.map((item) => ({
+          (data.items || []).map((item) => ({
             id: item.product.id,
             title: item.product.fieldData.name,
             description: item.product.fieldData.description,
@@ -60,13 +60,37 @@ const HomeScreen = ({ navigation }) => {
         ),
       )
       .catch((error) => console.error("Error fetching products:", error));
-  }, []);
 
-  const product = {
-    name: "Fietshelm",
-    price: "$100",
-    description: "Een veilige en comfortabele fietshelm.",
-  };
+    fetch(
+      "https://api.webflow.com/v2/collections/699ef903c173cedbf2a4b1c3/items",
+      {
+        headers: {
+          Authorization:
+            "Bearer cdf45fa235b24be0b5cdb9a2255198c2a8d006bcd762ca7d69e7d55bad3a0396",
+        },
+      },
+    )
+      .then((res) => res.json())
+      .then((data) =>
+        setBlogs(
+          (data.items || []).map((item) => ({
+            id: item.id,
+            title: item.fieldData.name || item.fieldData.title || "",
+            description:
+              item.fieldData.description ||
+              item.fieldData["short-description"] ||
+              "",
+            image: {
+              uri:
+                item.fieldData["main-image"]?.url ||
+                item.fieldData.image?.url ||
+                "",
+            },
+          })),
+        ),
+      )
+      .catch((error) => console.error("Error fetching blogs:", error));
+  }, []);
 
   const filteredProducts = products.filter(
     (p) =>
@@ -84,9 +108,11 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text>Dit is hopelijk een werkende component</Text>
+      <Text style={styles.heading}>Welkom</Text>
+      <Text style={styles.subText}>
+        Dit is mijn overzicht van producten en blogs.
+      </Text>
 
-      {/* TextInput */}
       <TextInput
         style={styles.input}
         placeholder="Zoek een product..."
@@ -94,15 +120,12 @@ const HomeScreen = ({ navigation }) => {
         onChangeText={setSearchQuery}
       />
 
-      {/* Pressable */}
       <Pressable style={styles.pressable}>
         <Text style={styles.pressableText}>Klik mij</Text>
       </Pressable>
 
-      {/* Button */}
       <Button title="Druk hier" onPress={() => alert("Button geklikt")} />
 
-      {/* Switch */}
       <View style={styles.switchContainer}>
         <Text>Dark mode</Text>
         <Switch
@@ -114,7 +137,7 @@ const HomeScreen = ({ navigation }) => {
       <Picker
         selectedValue={selectedCategory}
         onValueChange={setSelectedCategory}
-        style={{ width: 200, marginBottom: 20 }}
+        style={styles.picker}
       >
         <Picker.Item label="Alle categorieën" value="" />
         <Picker.Item label="Veiligheid" value="Veiligheid" />
@@ -125,7 +148,7 @@ const HomeScreen = ({ navigation }) => {
       <Picker
         selectedValue={sortOption}
         onValueChange={setSortOption}
-        style={{ width: 200, marginBottom: 20 }}
+        style={styles.picker}
       >
         <Picker.Item label="Prijs oplopend" value="price-asc" />
         <Picker.Item label="Prijs aflopend" value="price-desc" />
@@ -133,6 +156,7 @@ const HomeScreen = ({ navigation }) => {
         <Picker.Item label="Naam Z-A" value="name-desc" />
       </Picker>
 
+      <Text style={styles.sectionTitle}>Producten</Text>
       {sortedProducts.map((product) => (
         <ProductCard
           key={product.id}
@@ -144,20 +168,16 @@ const HomeScreen = ({ navigation }) => {
         />
       ))}
 
-      {/* BlogCards */}
-      <BlogCard
-        title="Een prachtige dag om te fietsen"
-        description="Vandaag is het een prachtige dag om te fietsen! De zon schijnt, de vogels fluiten, en de lucht is fris. Het perfecte weer om eropuit te gaan en te genieten van de natuur op twee wielen."
-        image={require("../images/product.jpg")}
-        onPress={() =>
-          navigation.navigate("BlogDetails", {
-            title: "Een prachtige dag om te fietsen",
-            description:
-              "Vandaag is het een prachtige dag om te fietsen! De zon schijnt, de vogels fluiten, en de lucht is fris. Het perfecte weer om eropuit te gaan en te genieten van de natuur op twee wielen.",
-            image: require("../images/product.jpg"),
-          })
-        }
-      />
+      <Text style={styles.sectionTitle}>Blogs</Text>
+      {blogs.map((blog) => (
+        <BlogCard
+          key={blog.id}
+          title={blog.title}
+          description={blog.description}
+          image={blog.image}
+          onPress={() => navigation.navigate("BlogDetails", blog)}
+        />
+      ))}
 
       <StatusBar style="auto" />
     </ScrollView>
@@ -171,6 +191,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
+  },
+  heading: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  subText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#666",
   },
   input: {
     width: "100%",
@@ -190,10 +221,22 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   switchContainer: {
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    justifyContent: "space-between",
     marginVertical: 10,
+  },
+  picker: {
+    width: "100%",
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginTop: 20,
+    marginBottom: 10,
+    alignSelf: "flex-start",
   },
 });
 

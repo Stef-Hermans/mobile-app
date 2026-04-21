@@ -1,20 +1,12 @@
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  ScrollView,
-  Image,
-  View,
-  Button,
-} from "react-native";
-import { useState } from "react";
+import { StyleSheet, Text, ScrollView, Image } from "react-native";
 
 const BlogDetail = ({ route }) => {
   const { title, description, image } = route.params;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Detailscherm</Text>
+      <Text style={styles.screenTitle}>Detailscherm</Text>
       <Image source={image} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
@@ -31,28 +23,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
-  input: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    marginVertical: 10,
-    borderRadius: 8,
+  screenTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
   },
-  pressable: {
-    backgroundColor: "#6C63FF",
-    padding: 10,
+  image: {
+    width: 300,
+    height: 200,
     borderRadius: 8,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
     marginBottom: 10,
+    textAlign: "center",
   },
-  pressableText: {
-    color: "#fff",
-  },
-  switchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginVertical: 10,
+  description: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
   },
 });
 

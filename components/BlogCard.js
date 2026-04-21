@@ -1,9 +1,7 @@
 import React from "react";
 import { View, Text, Image, Button, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
 const BlogCard = ({ title, description, image, onPress }) => {
-  const navigation = useNavigation();
   return (
     <View style={styles.card}>
       <Image source={image} style={styles.image} />
@@ -16,7 +14,7 @@ const BlogCard = ({ title, description, image, onPress }) => {
 
 const styles = StyleSheet.create({
   card: {
-    width: 200,
+    width: 300,
     padding: 10,
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -24,7 +22,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 150,
+    height: 180,
     borderRadius: 8,
   },
   title: {
@@ -32,15 +30,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 10,
   },
-  price: {
-    fontSize: 16,
-    color: "#6C63FF",
-    marginTop: 5,
-  },
   description: {
     fontSize: 14,
     color: "#666",
     marginTop: 5,
+    marginBottom: 10,
   },
 });
 
