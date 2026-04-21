@@ -6,6 +6,8 @@ import {
   Image,
   View,
   Pressable,
+  Button,
+  Alert,
 } from "react-native";
 import { useState } from "react";
 
@@ -25,7 +27,11 @@ const ProductDetail = ({ route }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.screenTitle}>Detailscherm</Text>
-      <Image source={image} style={styles.image} />
+
+      <View style={styles.imageContainer}>
+        <Image source={image} style={styles.image} resizeMode="contain" />
+      </View>
+
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.price}>€{price.toFixed(2)}</Text>
       <Text style={styles.description}>{description}</Text>
@@ -47,6 +53,14 @@ const ProductDetail = ({ route }) => {
         Totaal: €{(quantity * price).toFixed(2)}
       </Text>
 
+      <View style={styles.buyButtonContainer}>
+        <Button
+          title="Koop nu"
+          onPress={() => Alert.alert("Bedankt!", "Je product werd toegevoegd.")}
+          color="#0bab77"
+        />
+      </View>
+
       <StatusBar style="auto" />
     </ScrollView>
   );
@@ -65,11 +79,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
   },
-  image: {
-    width: 300,
-    height: 220,
-    borderRadius: 8,
+  imageContainer: {
+    width: "100%",
+    height: 280,
+    backgroundColor: "#f5f7fb",
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 20,
+    overflow: "hidden",
+  },
+  image: {
+    width: "90%",
+    height: "90%",
   },
   title: {
     fontSize: 22,
@@ -87,6 +109,7 @@ const styles = StyleSheet.create({
     color: "#666",
     textAlign: "center",
     marginBottom: 20,
+    lineHeight: 22,
   },
   quantityContainer: {
     flexDirection: "row",
@@ -118,6 +141,11 @@ const styles = StyleSheet.create({
   totalPrice: {
     fontSize: 20,
     fontWeight: "bold",
+    marginBottom: 20,
+  },
+  buyButtonContainer: {
+    width: "100%",
+    marginTop: 10,
   },
 });
 
