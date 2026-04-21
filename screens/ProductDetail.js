@@ -12,10 +12,13 @@ import {
 import { useState } from "react";
 
 const ProductDetail = ({ route, isEnabled }) => {
+  // Data die van HomeScreen wordt doorgestuurd via navigation
   const { title, description, price, image } = route.params;
 
+  // State voor hoeveelheid producten
   const [quantity, setQuantity] = useState(1);
 
+  // Kleurenset voor light mode / dark mode
   const colors = isEnabled
     ? {
         background: "#111827",
@@ -32,8 +35,10 @@ const ProductDetail = ({ route, isEnabled }) => {
         accent: "#0bab77",
       };
 
+  // Hoeveelheid verhogen
   const increaseQuantity = () => setQuantity(quantity + 1);
 
+  // Hoeveelheid verlagen, maar niet onder 1
   const decreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -47,14 +52,17 @@ const ProductDetail = ({ route, isEnabled }) => {
         { backgroundColor: colors.background },
       ]}
     >
+      {/* Titel van het scherm */}
       <Text style={[styles.screenTitle, { color: colors.text }]}>
         Detailscherm
       </Text>
 
+      {/* Afbeelding in een container zodat die mooier weergegeven wordt */}
       <View style={[styles.imageContainer, { backgroundColor: colors.card }]}>
         <Image source={image} style={styles.image} resizeMode="contain" />
       </View>
 
+      {/* Productinformatie */}
       <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
       <Text style={[styles.price, { color: colors.accent }]}>
         €{price.toFixed(2)}
@@ -63,6 +71,7 @@ const ProductDetail = ({ route, isEnabled }) => {
         {description}
       </Text>
 
+      {/* Aantal aanpassen met min en plus */}
       <View style={styles.quantityContainer}>
         <Pressable style={styles.button} onPress={decreaseQuantity}>
           <Text style={styles.buttonText}>-</Text>
@@ -77,6 +86,7 @@ const ProductDetail = ({ route, isEnabled }) => {
         </Pressable>
       </View>
 
+      {/* Totaaloverzicht */}
       <Text style={[styles.totalText, { color: colors.text }]}>
         Aantal producten: {quantity}
       </Text>
@@ -84,6 +94,7 @@ const ProductDetail = ({ route, isEnabled }) => {
         Totaal: €{(quantity * price).toFixed(2)}
       </Text>
 
+      {/* Koopknop */}
       <View style={styles.buyButtonContainer}>
         <Button
           title="Koop nu"
@@ -92,23 +103,29 @@ const ProductDetail = ({ route, isEnabled }) => {
         />
       </View>
 
+      {/* StatusBar aanpassen aan dark mode */}
       <StatusBar style={isEnabled ? "light" : "dark"} />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  // Algemene container
   container: {
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
   },
+
+  // Titel van het detailscherm
   screenTitle: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
   },
+
+  // Container rond productafbeelding
   imageContainer: {
     width: "100%",
     height: 280,
@@ -118,32 +135,44 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflow: "hidden",
   },
+
+  // Afbeelding zelf
   image: {
     width: "90%",
     height: "90%",
   },
+
+  // Producttitel
   title: {
     fontSize: 22,
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
   },
+
+  // Productprijs
   price: {
     fontSize: 20,
     marginBottom: 10,
   },
+
+  // Beschrijving van product
   description: {
     fontSize: 16,
     textAlign: "center",
     marginBottom: 20,
     lineHeight: 22,
   },
+
+  // Min en plus naast de hoeveelheid
   quantityContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 20,
     marginBottom: 20,
   },
+
+  // Groene min/plus knop
   button: {
     backgroundColor: "#0bab77",
     width: 45,
@@ -152,24 +181,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
+  // Tekst in min/plus knop
   buttonText: {
     color: "#fff",
     fontSize: 24,
     fontWeight: "bold",
   },
+
+  // Getal tussen min en plus
   quantity: {
     fontSize: 20,
     fontWeight: "bold",
   },
+
+  // Tekst van hoeveelheid
   totalText: {
     fontSize: 18,
     marginBottom: 10,
   },
+
+  // Tekst van totaalprijs
   totalPrice: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
   },
+
+  // Container van koopknop
   buyButtonContainer: {
     width: "100%",
     marginTop: 10,
