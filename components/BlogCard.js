@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, Button, StyleSheet } from "react-native";
+import { View, Text, Image, Pressable, StyleSheet } from "react-native";
 
 const BlogCard = ({ title, description, image, onPress }) => {
   return (
@@ -7,7 +7,9 @@ const BlogCard = ({ title, description, image, onPress }) => {
       <Image source={image} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
-      <Button title="Bekijk de blogpost" onPress={onPress} />
+      <Pressable style={styles.button} onPress={onPress}>
+        <Text style={styles.buttonText}>Bekijk de blogpost</Text>
+      </Pressable>
     </View>
   );
 };
@@ -35,6 +37,17 @@ const styles = StyleSheet.create({
     color: "#666",
     marginTop: 5,
     marginBottom: 10,
+  },
+  button: {
+    backgroundColor: "#0bab77",
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 15,
   },
 });
 

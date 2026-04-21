@@ -5,7 +5,7 @@ import {
   ScrollView,
   Image,
   View,
-  Button,
+  Pressable,
 } from "react-native";
 import { useState } from "react";
 
@@ -31,9 +31,15 @@ const ProductDetail = ({ route }) => {
       <Text style={styles.description}>{description}</Text>
 
       <View style={styles.quantityContainer}>
-        <Button title="-" onPress={decreaseQuantity} />
+        <Pressable style={styles.button} onPress={decreaseQuantity}>
+          <Text style={styles.buttonText}>-</Text>
+        </Pressable>
+
         <Text style={styles.quantity}>{quantity}</Text>
-        <Button title="+" onPress={increaseQuantity} />
+
+        <Pressable style={styles.button} onPress={increaseQuantity}>
+          <Text style={styles.buttonText}>+</Text>
+        </Pressable>
       </View>
 
       <Text style={styles.totalText}>Aantal producten: {quantity}</Text>
@@ -73,7 +79,7 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 20,
-    color: "#6C63FF",
+    color: "#0bab77",
     marginBottom: 10,
   },
   description: {
@@ -87,6 +93,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 20,
     marginBottom: 20,
+  },
+  button: {
+    backgroundColor: "#0bab77",
+    width: 45,
+    height: 45,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 24,
+    fontWeight: "bold",
   },
   quantity: {
     fontSize: 20,
