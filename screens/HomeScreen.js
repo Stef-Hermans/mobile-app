@@ -125,9 +125,14 @@ const HomeScreen = ({ navigation, isEnabled, setIsEnabled }) => {
               uri: item.fieldData["main-image"]?.url,
             },
 
-            // Huidige categorie-omzetting voor blogs
-            category:
-              categoryNames[item.fieldData.category] || "Onbekende categorie",
+            // Blogs hebben meerdere categorieën in Webflow
+            // Daarom slaan we hier een array van leesbare categorienamen op
+            categories: Array.isArray(item.fieldData.categories)
+              ? item.fieldData.categories.map(
+                  (categoryId) =>
+                    categoryNames[categoryId] || "Onbekende categorie",
+                )
+              : [],
 
             publishedOn: item.lastPublished || item.createdOn,
           })),
@@ -167,7 +172,8 @@ const HomeScreen = ({ navigation, isEnabled, setIsEnabled }) => {
   // Filter op blogcategorie + zoekterm
   const filteredBlogs = blogs.filter(
     (blog) =>
-      (selectedBlogCategory === "" || blog.category === selectedBlogCategory) &&
+      (selectedBlogCategory === "" ||
+        blog.categories.includes(selectedBlogCategory)) &&
       blog.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
@@ -293,7 +299,7 @@ const HomeScreen = ({ navigation, isEnabled, setIsEnabled }) => {
           onValueChange={setSelectedBlogCategory}
           style={[styles.picker, { color: colors.text }]}
         >
-          <Picker.Item label="Alle categorieën" value="" />
+          <Picker.Item label="Alle blogs" value="" />
           <Picker.Item label="Blogs E-Fietsen" value="Blogs E-Fietsen" />
           <Picker.Item label="Blogs E-Steps" value="Blogs E-Steps" />
         </Picker>
