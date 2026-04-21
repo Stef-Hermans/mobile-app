@@ -1,17 +1,47 @@
 import React from "react";
 import { View, Text, Image, Pressable, StyleSheet } from "react-native";
 
-const ProductCard = ({ title, description, price, image, onPress }) => {
+const ProductCard = ({
+  title,
+  description,
+  price,
+  image,
+  onPress,
+  isEnabled,
+}) => {
+  const colors = isEnabled
+    ? {
+        card: "#1f2937",
+        imageBox: "#111827",
+        text: "#f9fafb",
+        subText: "#d1d5db",
+        accent: "#0bab77",
+      }
+    : {
+        card: "#fff",
+        imageBox: "#f5f7fb",
+        text: "#111827",
+        subText: "#6b7280",
+        accent: "#0bab77",
+      };
+
   return (
-    <View style={styles.card}>
-      <View style={styles.imageContainer}>
+    <View style={[styles.card, { backgroundColor: colors.card }]}>
+      <View
+        style={[styles.imageContainer, { backgroundColor: colors.imageBox }]}
+      >
         <Image source={image} style={styles.image} resizeMode="contain" />
       </View>
 
-      <Text style={styles.category}>Product</Text>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.price}>€{price.toFixed(2)}</Text>
-      <Text style={styles.description}>{description}</Text>
+      <Text style={[styles.category, { color: colors.subText }]}>Product</Text>
+      <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+      <Text style={[styles.price, { color: colors.accent }]}>
+        €{price.toFixed(2)}
+      </Text>
+      <Text style={[styles.description, { color: colors.subText }]}>
+        {description}
+      </Text>
+
       <Pressable style={styles.button} onPress={onPress}>
         <Text style={styles.buttonText}>Bekijk details</Text>
       </Pressable>
@@ -22,7 +52,6 @@ const ProductCard = ({ title, description, price, image, onPress }) => {
 const styles = StyleSheet.create({
   card: {
     width: 320,
-    backgroundColor: "#fff",
     borderRadius: 18,
     padding: 16,
     marginBottom: 20,
@@ -34,7 +63,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: "100%",
     height: 220,
-    backgroundColor: "#f5f7fb",
     borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",
@@ -48,25 +76,21 @@ const styles = StyleSheet.create({
   category: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#6b7280",
     marginBottom: 6,
     textTransform: "uppercase",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#111827",
     marginBottom: 8,
   },
   price: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#0bab77",
     marginBottom: 10,
   },
   description: {
     fontSize: 14,
-    color: "#6b7280",
     marginBottom: 14,
     lineHeight: 20,
   },

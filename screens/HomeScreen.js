@@ -5,8 +5,8 @@ import {
   View,
   TextInput,
   ScrollView,
-  Button,
   Switch,
+  Pressable,
 } from "react-native";
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
@@ -23,8 +23,7 @@ const categoryNames = {
   "699ef99d7cd6ad990044be4f": "E-Steps",
 };
 
-const HomeScreen = ({ navigation }) => {
-  const [isEnabled, setIsEnabled] = useState(false);
+const HomeScreen = ({ navigation, isEnabled, setIsEnabled }) => {
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
 
@@ -37,8 +36,27 @@ const HomeScreen = ({ navigation }) => {
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [showAllBlogs, setShowAllBlogs] = useState(false);
 
+  const colors = isEnabled
+    ? {
+        background: "#111827",
+        card: "#1f2937",
+        text: "#f9fafb",
+        subText: "#d1d5db",
+        border: "#374151",
+        inputBackground: "#1f2937",
+        accent: "#0bab77",
+      }
+    : {
+        background: "#f5f7fb",
+        card: "#ffffff",
+        text: "#111827",
+        subText: "#6b7280",
+        border: "#d1d5db",
+        inputBackground: "#ffffff",
+        accent: "#0bab77",
+      };
+
   useEffect(() => {
-    // PRODUCTEN
     fetch(
       "https://api.webflow.com/v2/sites/698c7fd2232508e34c8c906c/products",
       {
@@ -68,7 +86,6 @@ const HomeScreen = ({ navigation }) => {
       )
       .catch((error) => console.error("Error fetching products:", error));
 
-    // BLOGS
     fetch(
       "https://api.webflow.com/v2/collections/699ef903c173cedbf2a4b1c3/items",
       {
@@ -137,35 +154,54 @@ const HomeScreen = ({ navigation }) => {
   const visibleBlogs = showAllBlogs ? newestBlogs : newestBlogs.slice(0, 4);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Welkom</Text>
-      <Text style={styles.subText}>
+    <ScrollView
+      contentContainerStyle={[
+        styles.container,
+        { backgroundColor: colors.background },
+      ]}
+    >
+      <Text style={[styles.heading, { color: colors.text }]}>Welkom</Text>
+      <Text style={[styles.subText, { color: colors.subText }]}>
         Dit is mijn overzicht van producten en blogs.
       </Text>
 
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            backgroundColor: colors.inputBackground,
+            borderColor: colors.border,
+            color: colors.text,
+          },
+        ]}
         placeholder="Zoek een product of blog..."
+        placeholderTextColor={colors.subText}
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
 
-      <View style={styles.switchContainer}>
-        <Text>Dark mode</Text>
+      <View style={[styles.switchContainer, { backgroundColor: colors.card }]}>
+        <Text style={{ color: colors.text }}>Dark mode</Text>
         <Switch
           value={isEnabled}
           onValueChange={() => setIsEnabled(!isEnabled)}
+          trackColor={{ false: "#d1d5db", true: "#34d399" }}
+          thumbColor={isEnabled ? "#0bab77" : "#f4f3f4"}
         />
       </View>
 
-      <Text style={styles.sectionTitle}>Producten</Text>
+      <Text style={[styles.sectionTitle, { color: colors.text }]}>
+        Producten
+      </Text>
 
-      <View style={styles.filterBox}>
-        <Text style={styles.filterTitle}>Filter producten op categorie</Text>
+      <View style={[styles.filterBox, { backgroundColor: colors.card }]}>
+        <Text style={[styles.filterTitle, { color: colors.text }]}>
+          Filter producten op categorie
+        </Text>
         <Picker
           selectedValue={selectedCategory}
           onValueChange={setSelectedCategory}
-          style={styles.picker}
+          style={[styles.picker, { color: colors.text }]}
         >
           <Picker.Item label="Alle categorieën" value="" />
           <Picker.Item label="Veiligheid" value="Veiligheid" />
@@ -173,11 +209,13 @@ const HomeScreen = ({ navigation }) => {
           <Picker.Item label="E-Steps" value="E-Steps" />
         </Picker>
 
-        <Text style={styles.filterTitle}>Sorteer producten</Text>
+        <Text style={[styles.filterTitle, { color: colors.text }]}>
+          Sorteer producten
+        </Text>
         <Picker
           selectedValue={sortOption}
           onValueChange={setSortOption}
-          style={styles.picker}
+          style={[styles.picker, { color: colors.text }]}
         >
           <Picker.Item label="Prijs oplopend" value="price-asc" />
           <Picker.Item label="Prijs aflopend" value="price-desc" />
@@ -194,29 +232,31 @@ const HomeScreen = ({ navigation }) => {
           price={product.price}
           image={product.image}
           onPress={() => navigation.navigate("Details", product)}
+          isEnabled={isEnabled}
         />
       ))}
 
       {filteredProducts.length > 4 && (
-        <View style={styles.moreButton}>
-          <Button
-            title={
-              showAllProducts ? "Toon minder producten" : "Zie meer producten"
-            }
-            onPress={() => setShowAllProducts(!showAllProducts)}
-            color="#0bab77"
-          />
-        </View>
+        <Pressable
+          style={[styles.moreButton, { backgroundColor: colors.accent }]}
+          onPress={() => setShowAllProducts(!showAllProducts)}
+        >
+          <Text style={styles.moreButtonText}>
+            {showAllProducts ? "Toon minder producten" : "Zie meer producten"}
+          </Text>
+        </Pressable>
       )}
 
-      <Text style={styles.sectionTitle}>Blogs</Text>
+      <Text style={[styles.sectionTitle, { color: colors.text }]}>Blogs</Text>
 
-      <View style={styles.filterBox}>
-        <Text style={styles.filterTitle}>Filter blogs op categorie</Text>
+      <View style={[styles.filterBox, { backgroundColor: colors.card }]}>
+        <Text style={[styles.filterTitle, { color: colors.text }]}>
+          Filter blogs op categorie
+        </Text>
         <Picker
           selectedValue={selectedBlogCategory}
           onValueChange={setSelectedBlogCategory}
-          style={styles.picker}
+          style={[styles.picker, { color: colors.text }]}
         >
           <Picker.Item label="Alle categorieën" value="" />
           <Picker.Item label="Blogs E-Fietsen" value="Blogs E-Fietsen" />
@@ -231,20 +271,22 @@ const HomeScreen = ({ navigation }) => {
           description={blog.summary}
           image={blog.image}
           onPress={() => navigation.navigate("BlogDetails", blog)}
+          isEnabled={isEnabled}
         />
       ))}
 
       {filteredBlogs.length > 4 && (
-        <View style={styles.moreButton}>
-          <Button
-            title={showAllBlogs ? "Toon minder blogs" : "Zie meer blogs"}
-            onPress={() => setShowAllBlogs(!showAllBlogs)}
-            color="#0bab77"
-          />
-        </View>
+        <Pressable
+          style={[styles.moreButton, { backgroundColor: colors.accent }]}
+          onPress={() => setShowAllBlogs(!showAllBlogs)}
+        >
+          <Text style={styles.moreButtonText}>
+            {showAllBlogs ? "Toon minder blogs" : "Zie meer blogs"}
+          </Text>
+        </Pressable>
       )}
 
-      <StatusBar style="auto" />
+      <StatusBar style={isEnabled ? "light" : "dark"} />
     </ScrollView>
   );
 };
@@ -252,7 +294,6 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#f5f7fb",
     alignItems: "center",
     padding: 20,
     paddingTop: 40,
@@ -261,21 +302,17 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#111827",
     textAlign: "center",
   },
   subText: {
     fontSize: 16,
     textAlign: "center",
     marginBottom: 24,
-    color: "#6b7280",
     lineHeight: 22,
   },
   input: {
     width: "100%",
-    backgroundColor: "#fff",
     borderWidth: 1,
-    borderColor: "#d1d5db",
     padding: 12,
     marginBottom: 14,
     borderRadius: 12,
@@ -286,13 +323,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginVertical: 12,
-    backgroundColor: "#fff",
     padding: 12,
     borderRadius: 12,
   },
   filterBox: {
     width: "100%",
-    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 12,
     marginBottom: 16,
@@ -300,13 +335,11 @@ const styles = StyleSheet.create({
   filterTitle: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#111827",
     marginBottom: 6,
   },
   picker: {
     width: "100%",
     marginBottom: 10,
-    backgroundColor: "#fff",
   },
   sectionTitle: {
     fontSize: 24,
@@ -314,12 +347,19 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 12,
     alignSelf: "flex-start",
-    color: "#111827",
   },
   moreButton: {
-    width: "100%",
+    alignSelf: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 999,
     marginTop: 4,
     marginBottom: 10,
+  },
+  moreButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
   },
 });
 

@@ -1,52 +1,44 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, ScrollView, Image } from "react-native";
+import { StyleSheet, Text, ScrollView, Image, View } from "react-native";
 
-// opmaak voor de blogtekst (h2 en p)
-const renderFormattedText = (html) => {
-  if (!html) return null;
-
-  // splits op h2 en p
-  const parts = html.split(/(<h2>|<\/h2>|<p>|<\/p>)/g);
-
-  return parts.map((part, index) => {
-    if (part === "<h2>") return null;
-    if (part === "</h2>") return null;
-    if (part === "<p>") return null;
-    if (part === "</p>") return null;
-
-    // check vorige tag
-    const prev = parts[index - 1];
-
-    if (prev === "<h2>") {
-      return (
-        <Text key={index} style={styles.heading}>
-          {part}
-        </Text>
-      );
-    }
-
-    if (prev === "<p>") {
-      return (
-        <Text key={index} style={styles.paragraph}>
-          {part}
-        </Text>
-      );
-    }
-
-    return null;
-  });
-};
-
-const BlogDetail = ({ route }) => {
+const BlogDetail = ({ route, isEnabled }) => {
   const { title, body, image } = route.params;
 
+  const colors = isEnabled
+    ? {
+        background: "#111827",
+        card: "#1f2937",
+        text: "#f9fafb",
+        subText: "#d1d5db",
+      }
+    : {
+        background: "#fff",
+        card: "#f5f7fb",
+        text: "#111827",
+        subText: "#666",
+      };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.screenTitle}>Detailscherm</Text>
-      <Image source={image} style={styles.image} />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.description}>{body}</Text>
-      <StatusBar style="auto" />
+    <ScrollView
+      contentContainerStyle={[
+        styles.container,
+        { backgroundColor: colors.background },
+      ]}
+    >
+      <Text style={[styles.screenTitle, { color: colors.text }]}>
+        Detailscherm
+      </Text>
+
+      <View style={[styles.imageContainer, { backgroundColor: colors.card }]}>
+        <Image source={image} style={styles.image} resizeMode="contain" />
+      </View>
+
+      <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+      <Text style={[styles.description, { color: colors.subText }]}>
+        {body}
+      </Text>
+
+      <StatusBar style={isEnabled ? "light" : "dark"} />
     </ScrollView>
   );
 };
@@ -54,43 +46,40 @@ const BlogDetail = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     padding: 20,
   },
   screenTitle: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    marginTop: 20,
+  },
+  imageContainer: {
+    width: "100%",
+    height: 240,
+    borderRadius: 16,
+    marginBottom: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
   },
   image: {
-    width: 300,
-    height: 200,
-    borderRadius: 8,
-    marginBottom: 20,
+    width: "100%",
+    height: "100%",
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
   },
   description: {
     fontSize: 16,
-    color: "#666",
-    textAlign: "center",
-  },
-  heading: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  paragraph: {
-    fontSize: 16,
-    color: "#666",
-    marginBottom: 10,
+    textAlign: "left",
+    width: "100%",
+    lineHeight: 24,
   },
 });
 

@@ -1,12 +1,29 @@
 import React from "react";
 import { View, Text, Image, Pressable, StyleSheet } from "react-native";
 
-const BlogCard = ({ title, description, image, onPress }) => {
+const BlogCard = ({ title, description, image, onPress, isEnabled }) => {
+  const colors = isEnabled
+    ? {
+        card: "#1f2937",
+        text: "#f9fafb",
+        subText: "#d1d5db",
+        accent: "#0bab77",
+      }
+    : {
+        card: "#fff",
+        text: "#111827",
+        subText: "#6b7280",
+        accent: "#0bab77",
+      };
+
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: colors.card }]}>
       <Image source={image} style={styles.image} />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.description}>{description}</Text>
+      <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+      <Text style={[styles.description, { color: colors.subText }]}>
+        {description}
+      </Text>
+
       <Pressable style={styles.button} onPress={onPress}>
         <Text style={styles.buttonText}>Bekijk de blogpost</Text>
       </Pressable>
@@ -18,7 +35,6 @@ const styles = StyleSheet.create({
   card: {
     width: 300,
     padding: 10,
-    backgroundColor: "#fff",
     borderRadius: 10,
     marginBottom: 20,
   },
@@ -34,7 +50,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: "#666",
     marginTop: 5,
     marginBottom: 10,
   },
