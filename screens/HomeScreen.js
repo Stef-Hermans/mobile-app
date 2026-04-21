@@ -33,6 +33,7 @@ const HomeScreen = ({ navigation }) => {
   const [sortOption, setSortOption] = useState("price-asc");
 
   useEffect(() => {
+    // PRODUCTEN
     fetch(
       "https://api.webflow.com/v2/sites/698c7fd2232508e34c8c906c/products",
       {
@@ -61,6 +62,7 @@ const HomeScreen = ({ navigation }) => {
       )
       .catch((error) => console.error("Error fetching products:", error));
 
+    // BLOGS
     fetch(
       "https://api.webflow.com/v2/collections/699ef903c173cedbf2a4b1c3/items",
       {
@@ -75,16 +77,15 @@ const HomeScreen = ({ navigation }) => {
         setBlogs(
           (data.items || []).map((item) => ({
             id: item.id,
-            title: item.fieldData.name || item.fieldData.title || "",
-            description:
-              item.fieldData.description ||
-              item.fieldData["short-description"] ||
-              "",
+            title: item.fieldData.name,
+            summary: item.fieldData["post-summary"],
+            body: item.fieldData["post-body"]
+              ?.replace(/<\/p>/g, "\n\n")
+              .replace(/<\/h2>/g, "\n\n")
+              .replace(/<[^>]*>/g, "")
+              .replace(/&nbsp;/g, " "),
             image: {
-              uri:
-                item.fieldData["main-image"]?.url ||
-                item.fieldData.image?.url ||
-                "",
+              uri: item.fieldData["main-image"]?.url,
             },
           })),
         ),
@@ -173,7 +174,7 @@ const HomeScreen = ({ navigation }) => {
         <BlogCard
           key={blog.id}
           title={blog.title}
-          description={blog.description}
+          description={blog.summary}
           image={blog.image}
           onPress={() => navigation.navigate("BlogDetails", blog)}
         />
