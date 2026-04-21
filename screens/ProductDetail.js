@@ -15,6 +15,7 @@ const ProductDetail = ({ route }) => {
   const [quantity, setQuantity] = useState(1);
 
   const increaseQuantity = () => setQuantity(quantity + 1);
+
   const decreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -23,10 +24,10 @@ const ProductDetail = ({ route }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Detailscherm</Text>
+      <Text style={styles.screenTitle}>Detailscherm</Text>
       <Image source={image} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.price}>€{price}</Text>
+      <Text style={styles.price}>€{price.toFixed(2)}</Text>
       <Text style={styles.description}>{description}</Text>
 
       <View style={styles.quantityContainer}>
@@ -35,7 +36,11 @@ const ProductDetail = ({ route }) => {
         <Button title="+" onPress={increaseQuantity} />
       </View>
 
-      <Text style={styles.totalPrice}>Totaal: €{quantity * price}</Text>
+      <Text style={styles.totalText}>Aantal producten: {quantity}</Text>
+      <Text style={styles.totalPrice}>
+        Totaal: €{(quantity * price).toFixed(2)}
+      </Text>
+
       <StatusBar style="auto" />
     </ScrollView>
   );
@@ -49,34 +54,51 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
-  input: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    marginVertical: 10,
-    borderRadius: 8,
-  },
-  pressable: {
-    backgroundColor: "#6C63FF",
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  pressableText: {
-    color: "#fff",
-  },
-  switchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginVertical: 10,
+  screenTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
   },
   image: {
-    width: 250,
-    height: 250,
+    width: 300,
+    height: 220,
     borderRadius: 8,
     marginBottom: 20,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  price: {
+    fontSize: 20,
+    color: "#6C63FF",
+    marginBottom: 10,
+  },
+  description: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20,
+    marginBottom: 20,
+  },
+  quantity: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  totalText: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  totalPrice: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
 

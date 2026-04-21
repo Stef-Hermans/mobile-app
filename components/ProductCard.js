@@ -1,14 +1,12 @@
 import React from "react";
 import { View, Text, Image, Button, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
 const ProductCard = ({ title, description, price, image, onPress }) => {
-  const navigation = useNavigation();
   return (
     <View style={styles.card}>
       <Image source={image} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.price}>{price}</Text>
+      <Text style={styles.price}>€{price.toFixed(2)}</Text>
       <Text style={styles.description}>{description}</Text>
       <Button title="Druk hier voor detail" onPress={onPress} />
     </View>
@@ -17,15 +15,15 @@ const ProductCard = ({ title, description, price, image, onPress }) => {
 
 const styles = StyleSheet.create({
   card: {
-    width: 200,
+    width: 300,
     padding: 10,
     backgroundColor: "#fff",
     borderRadius: 10,
     marginBottom: 20,
   },
   image: {
-    width: 250,
-    height: 250,
+    width: "100%",
+    height: 220,
     borderRadius: 8,
   },
   title: {
@@ -42,6 +40,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
     marginTop: 5,
+    marginBottom: 10,
   },
 });
 
