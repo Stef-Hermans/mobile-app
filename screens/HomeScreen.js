@@ -4,7 +4,6 @@ import {
   Text,
   View,
   TextInput,
-  Pressable,
   ScrollView,
   Button,
   Switch,
@@ -28,9 +27,15 @@ const HomeScreen = ({ navigation }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
+
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBlogCategory, setSelectedBlogCategory] = useState("");
+
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("price-asc");
+
+  const [showAllProducts, setShowAllProducts] = useState(false);
+  const [showAllBlogs, setShowAllBlogs] = useState(false);
 
   useEffect(() => {
     // PRODUCTEN
@@ -57,6 +62,7 @@ const HomeScreen = ({ navigation }) => {
             category:
               categoryNames[item.product.fieldData.category] ||
               "Onbekende categorie",
+            publishedOn: item.product.lastPublished || item.product.createdOn,
           })),
         ),
       )
@@ -87,6 +93,9 @@ const HomeScreen = ({ navigation }) => {
             image: {
               uri: item.fieldData["main-image"]?.url,
             },
+            category:
+              categoryNames[item.fieldData.category] || "Onbekende categorie",
+            publishedOn: item.lastPublished || item.createdOn,
           })),
         ),
       )
@@ -107,6 +116,26 @@ const HomeScreen = ({ navigation }) => {
     return 0;
   });
 
+  const newestProducts = [...filteredProducts].sort(
+    (a, b) => new Date(b.publishedOn) - new Date(a.publishedOn),
+  );
+
+  const visibleProducts = showAllProducts
+    ? sortedProducts
+    : newestProducts.slice(0, 4);
+
+  const filteredBlogs = blogs.filter(
+    (blog) =>
+      (selectedBlogCategory === "" || blog.category === selectedBlogCategory) &&
+      blog.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  const newestBlogs = [...filteredBlogs].sort(
+    (a, b) => new Date(b.publishedOn) - new Date(a.publishedOn),
+  );
+
+  const visibleBlogs = showAllBlogs ? newestBlogs : newestBlogs.slice(0, 4);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.heading}>Welkom</Text>
@@ -116,16 +145,10 @@ const HomeScreen = ({ navigation }) => {
 
       <TextInput
         style={styles.input}
-        placeholder="Zoek een product..."
+        placeholder="Zoek een product of blog..."
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
-
-      <Pressable style={styles.pressable}>
-        <Text style={styles.pressableText}>Klik mij</Text>
-      </Pressable>
-
-      <Button title="Druk hier" onPress={() => alert("Button geklikt")} />
 
       <View style={styles.switchContainer}>
         <Text>Dark mode</Text>
@@ -135,30 +158,35 @@ const HomeScreen = ({ navigation }) => {
         />
       </View>
 
-      <Picker
-        selectedValue={selectedCategory}
-        onValueChange={setSelectedCategory}
-        style={styles.picker}
-      >
-        <Picker.Item label="Alle categorieën" value="" />
-        <Picker.Item label="Veiligheid" value="Veiligheid" />
-        <Picker.Item label="E-Fietsen" value="E-Fietsen" />
-        <Picker.Item label="E-Steps" value="E-Steps" />
-      </Picker>
-
-      <Picker
-        selectedValue={sortOption}
-        onValueChange={setSortOption}
-        style={styles.picker}
-      >
-        <Picker.Item label="Prijs oplopend" value="price-asc" />
-        <Picker.Item label="Prijs aflopend" value="price-desc" />
-        <Picker.Item label="Naam A-Z" value="name-asc" />
-        <Picker.Item label="Naam Z-A" value="name-desc" />
-      </Picker>
-
       <Text style={styles.sectionTitle}>Producten</Text>
-      {sortedProducts.map((product) => (
+
+      <View style={styles.filterBox}>
+        <Text style={styles.filterTitle}>Filter producten op categorie</Text>
+        <Picker
+          selectedValue={selectedCategory}
+          onValueChange={setSelectedCategory}
+          style={styles.picker}
+        >
+          <Picker.Item label="Alle categorieën" value="" />
+          <Picker.Item label="Veiligheid" value="Veiligheid" />
+          <Picker.Item label="E-Fietsen" value="E-Fietsen" />
+          <Picker.Item label="E-Steps" value="E-Steps" />
+        </Picker>
+
+        <Text style={styles.filterTitle}>Sorteer producten</Text>
+        <Picker
+          selectedValue={sortOption}
+          onValueChange={setSortOption}
+          style={styles.picker}
+        >
+          <Picker.Item label="Prijs oplopend" value="price-asc" />
+          <Picker.Item label="Prijs aflopend" value="price-desc" />
+          <Picker.Item label="Naam A-Z" value="name-asc" />
+          <Picker.Item label="Naam Z-A" value="name-desc" />
+        </Picker>
+      </View>
+
+      {visibleProducts.map((product) => (
         <ProductCard
           key={product.id}
           title={product.title}
@@ -169,8 +197,34 @@ const HomeScreen = ({ navigation }) => {
         />
       ))}
 
+      {filteredProducts.length > 4 && (
+        <View style={styles.moreButton}>
+          <Button
+            title={
+              showAllProducts ? "Toon minder producten" : "Zie meer producten"
+            }
+            onPress={() => setShowAllProducts(!showAllProducts)}
+            color="#0bab77"
+          />
+        </View>
+      )}
+
       <Text style={styles.sectionTitle}>Blogs</Text>
-      {blogs.map((blog) => (
+
+      <View style={styles.filterBox}>
+        <Text style={styles.filterTitle}>Filter blogs op categorie</Text>
+        <Picker
+          selectedValue={selectedBlogCategory}
+          onValueChange={setSelectedBlogCategory}
+          style={styles.picker}
+        >
+          <Picker.Item label="Alle categorieën" value="" />
+          <Picker.Item label="Blogs E-Fietsen" value="Blogs E-Fietsen" />
+          <Picker.Item label="Blogs E-Steps" value="Blogs E-Steps" />
+        </Picker>
+      </View>
+
+      {visibleBlogs.map((blog) => (
         <BlogCard
           key={blog.id}
           title={blog.title}
@@ -179,6 +233,16 @@ const HomeScreen = ({ navigation }) => {
           onPress={() => navigation.navigate("BlogDetails", blog)}
         />
       ))}
+
+      {filteredBlogs.length > 4 && (
+        <View style={styles.moreButton}>
+          <Button
+            title={showAllBlogs ? "Toon minder blogs" : "Zie meer blogs"}
+            onPress={() => setShowAllBlogs(!showAllBlogs)}
+            color="#0bab77"
+          />
+        </View>
+      )}
 
       <StatusBar style="auto" />
     </ScrollView>
@@ -216,18 +280,6 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     borderRadius: 12,
   },
-  pressable: {
-    backgroundColor: "#0bab77",
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 12,
-    width: "100%",
-    alignItems: "center",
-  },
-  pressableText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
   switchContainer: {
     width: "100%",
     flexDirection: "row",
@@ -238,9 +290,22 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 12,
   },
+  filterBox: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 16,
+  },
+  filterTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#111827",
+    marginBottom: 6,
+  },
   picker: {
     width: "100%",
-    marginBottom: 14,
+    marginBottom: 10,
     backgroundColor: "#fff",
   },
   sectionTitle: {
@@ -250,6 +315,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     alignSelf: "flex-start",
     color: "#111827",
+  },
+  moreButton: {
+    width: "100%",
+    marginTop: 4,
+    marginBottom: 10,
   },
 });
 
